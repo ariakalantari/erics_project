@@ -1,0 +1,97 @@
+<section class="rounded-xl border border-zinc-200 bg-white shadow-lg p-5"
+         data-controller="spot-detail">
+  <div class="flex items-start justify-between">
+    <div>
+      <div class="text-[11px] uppercase tracking-wider text-zinc-500 font-medium"><%= spot.parking_area.name %></div>
+      <div class="mt-0.5 text-lg font-semibold text-zinc-900"><%= spot.identifier %></div>
+    </div>
+    <button type="button"
+            data-action="spot-detail#dismiss"
+            class="text-zinc-400 hover:text-zinc-700 -mt-1 -mr-1 p-1 rounded hover:bg-zinc-100">
+      <i data-lucide="x" class="w-4 h-4"></i>
+    </button>
+  </div>
+
+  <div class="mt-3 inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium"
+       style="background: <%= spot.status_color %>1f; color: <%= spot.status_color %>">
+    <span class="w-1.5 h-1.5 rounded-full" style="background: <%= spot.status_color %>"></span>
+    <%= spot.display_status %>
+  </div>
+
+  <dl class="mt-5 pt-5 border-t border-zinc-100 grid grid-cols-2 gap-x-4 gap-y-3">
+    <div>
+      <dt class="text-[11px] uppercase tracking-wider text-zinc-500 font-medium">Type</dt>
+      <dd class="mt-0.5 text-sm font-medium text-zinc-900 flex items-center gap-1.5">
+        <% case spot.spot_type
+           when "ev_charging" %><i data-lucide="zap" class="w-3.5 h-3.5 text-blue-500"></i>
+        <% when "accessible" %><i data-lucide="accessibility" class="w-3.5 h-3.5 text-zinc-700"></i>
+        <% when "motorcycle" %><i data-lucide="bike" class="w-3.5 h-3.5 text-zinc-700"></i>
+        <% when "loading"    %><i data-lucide="truck" class="w-3.5 h-3.5 text-zinc-700"></i>
+        <% else                 %><i data-lucide="car" class="w-3.5 h-3.5 text-zinc-700"></i>
+        <% end %>
+        <%= spot.display_type %>
+      </dd>
+    </div>
+    <div>
+      <dt class="text-[11px] uppercase tracking-wider text-zinc-500 font-medium">Coordinates</dt>
+      <dd class="mt-0.5 text-sm font-mono text-zinc-700 tabular-nums">
+        <%= "%.4f" % spot.lat %>, <%= "%.4f" % spot.lng %>
+      </dd>
+    </div>
+  </dl>
+
+  <% if spot.ev_charging? && spot.charger.present? %>
+    <% c = spot.charger %>
+    <div class="mt-5 pt-5 border-t border-zinc-100">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-[11px] uppercase tracking-wider text-zinc-500 font-medium">Charger</h3>
+        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium <%= c.in_use? ? "bg-blue-50 text-blue-600" : c.faulted? ? "bg-red-50 text-red-600" : "bg-emerald-50 text-emerald-600" %>">
+          <%= c.status.tr("_", " ").capitalize %>
+        </span>
+      </div>
+      <dl class="grid grid-cols-2 gap-x-4 gap-y-3">
+        <div>
+          <dt class="text-[11px] uppercase tracking-wider text-zinc-500 font-medium">Power</dt>
+          <dd class="mt-0.5 text-base font-semibold text-zinc-900"><%= c.power_kw %><span class="text-xs font-medium text-zinc-400"> kW</span></dd>
+        </div>
+        <div>
+          <dt class="text-[11px] uppercase tracking-wider text-zinc-500 font-medium">Connector</dt>
+          <dd class="mt-0.5 text-sm font-medium text-zinc-900"><%= c.display_connector %></dd>
+        </div>
+        <div class="col-span-2">
+          <dt class="text-[11px] uppercase tracking-wider text-zinc-500 font-medium">Price</dt>
+          <dd class="mt-0.5 text-sm font-medium text-zinc-900"><%= number_with_precision(c.price_per_kwh, precision: 2) %> SEK<span class="text-xs font-medium text-zinc-400"> / kWh</span></dd>
+        </div>
+      </dl>
+    </div>
+  <% end %>
+
+  <div class="mt-5 pt-5 border-t border-zinc-100">
+    <div class="text-[11px] uppercase tracking-wider text-zinc-500 font-medium mb-2.5">Set status</div>
+    <div class="grid grid-cols-2 gap-2">
+      <% [
+        ["available",      "Available",      ParkingSpot::STATUS_COLORS["available"]],
+        ["occupied",       "Occupied",       ParkingSpot::STATUS_COLORS["occupied"]],
+        ["reserved",       "Reserved",       ParkingSpot::STATUS_COLORS["reserved"]],
+        ["out_of_service", "Out of service", ParkingSpot::STATUS_COLORS["out_of_service"]]
+      ].each do |status_key, label, color| %>
+        <% if spot.status == status_key %>
+          <button disabled
+                  class="flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-zinc-100 text-sm font-medium text-zinc-400 cursor-default">
+            <span class="w-2 h-2 rounded-full" style="background: <%= color %>"></span>
+            <%= label %>
+          </button>
+        <% else %>
+          <%= form_with url: parking_spot_path(spot), method: :patch, class: "contents" do |f| %>
+            <%= f.hidden_field :status, value: status_key, name: "parking_spot[status]" %>
+            <button type="submit"
+                    class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-zinc-200 hover:bg-zinc-50 hover:border-zinc-300 text-sm font-medium text-zinc-700 transition-colors">
+              <span class="w-2 h-2 rounded-full" style="background: <%= color %>"></span>
+              <%= label %>
+            </button>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</section>

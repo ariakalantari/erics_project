@@ -1,0 +1,36 @@
+<div class="relative" data-controller="dropdown">
+  <button type="button"
+          data-action="dropdown#toggle"
+          class="flex items-center gap-2 text-sm font-medium text-zinc-700 hover:text-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-50 transition-colors">
+    <i data-lucide="map" class="w-3.5 h-3.5 text-zinc-500"></i>
+    Areas
+    <span class="text-xs text-zinc-400">(<%= parking_areas.size %>)</span>
+    <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-zinc-400"></i>
+  </button>
+
+  <div data-dropdown-target="menu"
+       hidden
+       class="absolute right-0 top-full mt-2 w-[300px] rounded-xl border border-zinc-200 bg-white shadow-lg z-[1000] overflow-hidden">
+    <div class="p-2 space-y-1 max-h-[400px] overflow-y-auto">
+      <% parking_areas.each do |area| %>
+        <% available = area.available_count %>
+        <% total     = area.total_count %>
+        <% pct       = total.zero? ? 0 : (available.to_f / total * 100).round %>
+        <button type="button"
+                data-action="dropdown#flyTo"
+                data-dropdown-lat-param="<%= area.lat %>"
+                data-dropdown-lng-param="<%= area.lng %>"
+                data-dropdown-zoom-param="16"
+                class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-zinc-50 transition-colors group">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-sm font-medium text-zinc-900"><%= area.name %></span>
+            <span class="text-xs text-zinc-500 tabular-nums"><%= available %>/<%= total %></span>
+          </div>
+          <div class="h-1 w-full rounded-full bg-zinc-100 overflow-hidden">
+            <div class="h-full bg-emerald-500" style="width: <%= pct %>%"></div>
+          </div>
+        </button>
+      <% end %>
+    </div>
+  </div>
+</div>

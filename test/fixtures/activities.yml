@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  parking_spot: one
+  event_type: MyString
+  from_status: MyString
+  to_status: MyString
+
+two:
+  parking_spot: two
+  event_type: MyString
+  from_status: MyString
+  to_status: MyString

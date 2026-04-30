@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  parking_area: one
+  identifier: MyString
+  lat: 9.99
+  lng: 9.99
+  spot_type: 1
+  status: 1
+
+two:
+  parking_area: two
+  identifier: MyString
+  lat: 9.99
+  lng: 9.99
+  spot_type: 1
+  status: 1

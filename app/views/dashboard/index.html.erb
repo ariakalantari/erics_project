@@ -1,0 +1,42 @@
+<div class="flex flex-col h-dvh">
+  <%= turbo_stream_from "spots" %>
+  <div data-controller="spot-states" hidden>
+    <% @spots.each do |s| %>
+      <%= render "spot_state", spot: s %>
+    <% end %>
+  </div>
+
+  <%= render "topbar", parking_areas: @parking_areas %>
+
+  <main class="flex-1 min-h-0 relative bg-zinc-100 overflow-hidden">
+    <div data-controller="map"
+         data-map-spots-value="<%= @spots_json.to_json %>"
+         data-map-center-value="<%= @map_center.to_json %>"
+         data-action="filters:changed@window->map#applyFilter spot:status-changed@window->map#updateMarker map:fly-to@window->map#flyTo"
+         class="absolute inset-0"
+         style="min-height: 500px;"></div>
+
+    <div class="absolute top-4 left-4 z-[500] w-[280px] flex flex-col gap-3">
+      <%= render "stat_card", stats: @stats %>
+      <%= render "filter_card" %>
+    </div>
+
+    <div class="absolute top-4 right-4 z-[500] w-[320px]">
+      <%= render "activity_feed", activities: @recent_activities %>
+    </div>
+
+    <div class="absolute bottom-4 right-4 z-[500] w-[340px]">
+      <%= turbo_frame_tag "spot_detail" %>
+    </div>
+
+    <div class="absolute bottom-4 left-4 z-[500] rounded-lg bg-white/95 backdrop-blur px-3 py-2 border border-zinc-200 shadow-sm pointer-events-none">
+      <div class="flex items-center gap-3 text-[11px] font-medium text-zinc-700">
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#10b981"></span>Available</span>
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#a1a1aa"></span>Occupied</span>
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#f59e0b"></span>Reserved</span>
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#ef4444"></span>Out</span>
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full ring-2 ring-blue-200" style="background:#2563eb"></span>EV</span>
+      </div>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,34 @@
+<% percent_free = stats[:total].zero? ? 0 : (stats[:available].to_f / stats[:total] * 100).round %>
+<% ev_percent_free = stats[:ev_total].zero? ? 0 : (stats[:ev_available].to_f / stats[:ev_total] * 100).round %>
+
+<section class="rounded-xl border border-zinc-200 bg-white shadow-lg p-5"
+         data-controller="stats">
+  <div class="text-[11px] uppercase tracking-wider text-zinc-500 font-medium">Available now</div>
+  <div class="mt-1 flex items-baseline gap-2">
+    <div class="text-3xl font-semibold text-zinc-900 tabular-nums leading-none">
+      <span id="stat-available"><%= stats[:available] %></span>
+    </div>
+    <div class="text-base text-zinc-400 font-medium tabular-nums">/ <span id="stat-total"><%= stats[:total] %></span></div>
+    <div class="ml-auto rounded-md bg-emerald-50 text-emerald-600 px-2 py-0.5 text-xs font-medium tabular-nums">
+      <span id="stat-percent"><%= percent_free %></span>%
+    </div>
+  </div>
+
+  <div class="mt-3 h-1.5 w-full rounded-full bg-zinc-100 overflow-hidden">
+    <div id="stat-bar" class="h-full bg-emerald-500 transition-all duration-500" style="width: <%= percent_free %>%"></div>
+  </div>
+
+  <div class="mt-4 pt-4 border-t border-zinc-100 grid grid-cols-2 gap-4">
+    <div>
+      <div class="text-[11px] uppercase tracking-wider text-zinc-500 font-medium">EV Chargers</div>
+      <div class="mt-1 text-base font-semibold text-zinc-900 tabular-nums">
+        <span id="stat-ev-available"><%= stats[:ev_available] %></span>
+        <span class="text-sm text-zinc-400 font-medium">/ <span id="stat-ev-total"><%= stats[:ev_total] %></span></span>
+      </div>
+    </div>
+    <div>
+      <div class="text-[11px] uppercase tracking-wider text-zinc-500 font-medium">EV Free</div>
+      <div class="mt-1 text-base font-semibold text-blue-600 tabular-nums"><span id="stat-ev-percent"><%= ev_percent_free %></span>%</div>
+    </div>
+  </div>
+</section>

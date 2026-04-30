@@ -1,0 +1,12 @@
+<header class="flex items-center justify-between bg-white border-b border-zinc-200 px-6 py-3 shrink-0">
+  <div class="text-sm font-semibold text-zinc-900">
+    Mobility46 Parking <span class="text-zinc-400 font-normal">·</span> Stockholm
+  </div>
+
+  <div class="flex items-center gap-3">
+    <%= render "areas_dropdown", parking_areas: parking_areas %>
+    <div class="text-xs text-zinc-500 tabular-nums">
+      <%= Time.current.strftime("%a %-d %b · %H:%M") %>
+    </div>
+  </div>
+</header>
